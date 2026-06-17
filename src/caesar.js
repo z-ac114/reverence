@@ -72,7 +72,22 @@ document.addEventListener('DOMContentLoaded', () => {
   rowContainer.appendChild(controlGroup);
   rowContainer.appendChild(outputGroup);
 
-  document.body.appendChild(rowContainer);
+  const headers = document.querySelectorAll('.section-header');
+  let nextHeader = null;
+
+  headers.forEach(header => {
+    const heading = header.querySelector('h3');
+    if (heading && heading.textContent.includes('ROT13')) {
+      nextHeader = header;
+    }
+  });
+
+  if (nextHeader) {
+    document.body.insertBefore(rowContainer, nextHeader);
+  } else {
+    document.body.appendChild(rowContainer);
+  }
+
 
   const triggerIntroAnimation = () => {
     if (typeof gsap !== 'undefined') {
