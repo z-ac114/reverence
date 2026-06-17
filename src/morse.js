@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  let isEncodingMode = true;
+  let isEncodingMode = false;
 
   const morseAlphabet = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',

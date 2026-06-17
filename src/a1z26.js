@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  let isEncodingMode = true;
+  let isEncodingMode = false;
 
   const rowContainer = document.createElement('div');
   rowContainer.classList.add('converter-row');
