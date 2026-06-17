@@ -173,3 +173,10 @@ a:active {
 .section-text p {
     margin: 0 0 8px 0;
 }
+
+.bottom-text {
+    margin-top: auto;
+    text-align: center;
+    color: #d2f3ff;
+    padding: 1rem 0;
+}
