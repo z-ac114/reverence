@@ -1,20 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   let isEncodingMode = false;
 
-  const morseAlphabet = {
-    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
-    'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
-    'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
-    'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-    'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--',
-    '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..',
-    '9': '----.', '0': '-----', ' ': '/', ".": '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.',
-  };
-
-  const decodeAlphabet = Object.fromEntries(
-    Object.entries(morseAlphabet).map(([key, value]) => [value, key])
-  );
-
   const rowContainer = document.createElement('div');
   rowContainer.classList.add('converter-row');
   rowContainer.style.opacity = '0';
@@ -22,60 +8,71 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputGroup = document.createElement('div');
   inputGroup.classList.add('input-group');
 
+  const controlGroup = document.createElement('div');
+  controlGroup.classList.add('input-group');
+  controlGroup.style.alignItems = 'center';
+  controlGroup.style.justifyContent = 'center';
+
   const outputGroup = document.createElement('div');
   outputGroup.classList.add('input-group');
 
   const inputLabel = document.createElement('label');
-  inputLabel.textContent = 'Morse Code (Input)';
+  inputLabel.textContent = 'Caesar (Input)';
   inputLabel.classList.add('box-label');
 
   const outputLabel = document.createElement('label');
   outputLabel.textContent = 'Text (Output)';
   outputLabel.classList.add('box-label');
 
-  const morseInput = document.createElement('textarea');
-  morseInput.placeholder = 'Enter Morse code to decode...';
-  morseInput.classList.add('base64-input');
-  morseInput.rows = 6;
-  morseInput.cols = 30;
+  const cipherInput = document.createElement('textarea');
+  cipherInput.placeholder = 'Enter text to decode...';
+  cipherInput.classList.add('base64-input');
+  cipherInput.rows = 6;
+  cipherInput.cols = 30;
 
   const toggleBtn = document.createElement('button');
   toggleBtn.textContent = '⇄';
   toggleBtn.classList.add('toggle-btn');
   toggleBtn.classList.add('decode-active');
 
-  const morseOutput = document.createElement('textarea');
-  morseOutput.placeholder = 'Decoded output...';
-  morseOutput.classList.add('base64-output');
-  morseOutput.rows = 6;
-  morseOutput.cols = 30;
-  morseOutput.readOnly = true;
-  
+  const shiftLabel = document.createElement('label');
+  shiftLabel.textContent = 'Shift';
+  shiftLabel.classList.add('box-label');
+
+  const shiftInput = document.createElement('input');
+  shiftInput.type = 'number';
+  shiftInput.value = '3'; 
+  shiftInput.min = '1';
+  shiftInput.max = '25';
+  shiftInput.classList.add('base64-input'); 
+  shiftInput.style.width = '70px';
+  shiftInput.style.height = '40px';
+  shiftInput.style.textAlign = 'center';
+  shiftInput.style.padding = '0';
+  shiftInput.style.marginTop = '10px';
+
+  const cipherOutput = document.createElement('textarea');
+  cipherOutput.placeholder = 'Decoded output...';
+  cipherOutput.classList.add('base64-output');
+  cipherOutput.rows = 6;
+  cipherOutput.cols = 30;
+  cipherOutput.readOnly = true;
+
   inputGroup.appendChild(inputLabel);
-  inputGroup.appendChild(morseInput);
+  inputGroup.appendChild(cipherInput);
+
+  controlGroup.appendChild(shiftLabel);
+  controlGroup.appendChild(toggleBtn);
+  controlGroup.appendChild(shiftInput);
 
   outputGroup.appendChild(outputLabel);
-  outputGroup.appendChild(morseOutput);
+  outputGroup.appendChild(cipherOutput);
 
   rowContainer.appendChild(inputGroup);
-  rowContainer.appendChild(toggleBtn);
+  rowContainer.appendChild(controlGroup);
   rowContainer.appendChild(outputGroup);
 
-  const headers = document.querySelectorAll('.section-header');
-  let nextHeader = null;
-
-  headers.forEach(header => {
-    const heading = header.querySelector('h3');
-    if (heading && heading.textContent.includes('Caesar')) {
-      nextHeader = header;
-    }
-  });
-
-  if (nextHeader) {
-    document.body.insertBefore(rowContainer, nextHeader);
-  } else {
-    document.body.appendChild(rowContainer);
-  }
+  document.body.appendChild(rowContainer);
 
   const triggerIntroAnimation = () => {
     if (typeof gsap !== 'undefined') {
@@ -120,52 +117,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
   scrollObserver.observe(rowContainer);
 
-  const encodeMorse = (str) => {
+  const caesarCipher = (str, shift) => {
     return str
-      .toUpperCase()
       .split('')
-      .map(char => morseAlphabet[char] || char)
-      .join(' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  };
-
-  const decodeMorse = (str) => {
-    return str
-      .trim()
-      .split(/\s+/)
-      .map(char => decodeAlphabet[char] || char)
-      .join('')
-      .replace(/\s*\/\s*/g, ' ');
+      .map(char => {
+        const code = char.charCodeAt(0);
+        
+        if (code >= 65 && code <= 90) {
+          return String.fromCharCode(((code - 65 + shift) % 26 + 26) % 26 + 65);
+        }
+        
+        if (code >= 97 && code <= 122) {
+          return String.fromCharCode(((code - 97 + shift) % 26 + 26) % 26 + 97);
+        }
+        
+        return char;
+      })
+      .join('');
   };
 
   const performConversion = () => {
-    const rawText = morseInput.value;
+    const rawText = cipherInput.value;
+    let shiftValue = parseInt(shiftInput.value, 10) || 0;
 
     if (rawText.length === 0) {
-      morseOutput.value = '';
+      cipherOutput.value = '';
       return;
     }
 
+    if (!isEncodingMode) {
+      shiftValue = -shiftValue;
+    }
+
     try {
-      if (isEncodingMode) {
-        morseOutput.value = encodeMorse(rawText);
-      } else {
-        morseOutput.value = decodeMorse(rawText);
-      }
+      cipherOutput.value = caesarCipher(rawText, shiftValue);
     } catch (error) {
-      morseOutput.value = 'Error processing Morse Code.';
+      cipherOutput.value = 'Error processing Caesar cipher.';
     }
 
     if (typeof gsap !== 'undefined') {
-      gsap.fromTo(morseOutput, 
+      gsap.fromTo(cipherOutput, 
         { borderColor: "#00b4db" }, 
         { borderColor: "#0d48a164", duration: 0.4 }
       );
     }
   };
 
-  morseInput.addEventListener('input', performConversion);
+  cipherInput.addEventListener('input', performConversion);
+  shiftInput.addEventListener('input', performConversion);
 
   toggleBtn.addEventListener('click', () => {
     isEncodingMode = !isEncodingMode; 
@@ -173,15 +172,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isEncodingMode) {
       toggleBtn.classList.remove('decode-active');
       inputLabel.textContent = 'Text (Input)';
-      outputLabel.textContent = 'Morse Code (Output)';
-      morseInput.placeholder = 'Enter text to encode...';
-      morseOutput.placeholder = 'Encoded output...';
+      outputLabel.textContent = 'Caesar (Output)';
+      cipherInput.placeholder = 'Enter plain text to encode...';
+      cipherOutput.placeholder = 'Encoded output...';
     } else {
       toggleBtn.classList.add('decode-active');
-      inputLabel.textContent = 'Morse Code (Input)';
+      inputLabel.textContent = 'Caesar (Input)';
       outputLabel.textContent = 'Text (Output)';
-      morseInput.placeholder = 'Enter Morse code to decode...';
-      morseOutput.placeholder = 'Decoded output...';
+      cipherInput.placeholder = 'Enter text to decode...';
+      cipherOutput.placeholder = 'Decoded output...';
     }
 
     if (typeof gsap !== 'undefined') {

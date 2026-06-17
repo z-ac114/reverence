@@ -6,6 +6,7 @@ html {
   background: linear-gradient(-45deg, #1b3465, #0d47a1, #00b4db, #149c83, #00b4db, #0d47a1, #1b3465);
   background-size: 400% 400%;
   overflow: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -64,8 +65,12 @@ a:active {
   display: flex;
   flex-direction: row;  
   gap: 15px;            
-  justify-content: center; 
-  align-items: flex-end;
+  justify-content: center;
+  align-items: flex-end;   
+  margin-bottom: 30px;
+  width: 100%; 
+  padding: 0 0 0 350px;  
+  box-sizing: border-box;  
 }
 
 .input-group {
@@ -81,6 +86,7 @@ a:active {
   color: #97acd8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  justify-content: right;
 }
 
 .base64-input, .base64-output {
@@ -124,10 +130,46 @@ a:active {
   transform: scale(0.95);
 }
 
-.toggle-btn.decode-active {
-  background-color: #28a745; 
+
+.section-header {
+    display: flex;
+    flex-direction: row;
+    align-items: right;
+    gap: 20px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    padding: 0 0 0 50px;  
 }
 
-.toggle-btn.decode-active:hover {
-  background-color: #1e7e34;
+.section-image {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #0d48a164;
+  flex-shrink: 0;
+  
+
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.section-image:hover {
+  transform: scale(1.15);
+  border-color: #00b4db; 
+  box-shadow: 0 0 20px rgba(0, 180, 219, 0.5); 
+  z-index: 10;
+}
+
+
+.section-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section-text h3 {
+    margin: 0 0 8px 0;
+}
+
+.section-text p {
+    margin: 0 0 8px 0;
 }

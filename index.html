@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Reverence</title>
@@ -12,15 +13,43 @@
 <body>
   <h1>Reverence - A multi-purpose encryption tool</h1>
   <h2>Official Tool for <a href="https://esoterica-arc.vercel.app/">Esoterica</a>.</h2>
-  <h3>1. Base64 Encoder + Decoder</h3>
-  <p>Base64 is a group of similar binary-to-text encoding schemes that represent binary data in an ASCII string format by transforming it into a radix-64 representation. <br> The term Base64 originates from a specific MIME content transfer encoding.</p>
+
+  <div class="section-header">
+    <img src="/src/assets/base64.jpg" alt="Base64 Icon" class="section-image" />
+    <div class="section-text">
+      <h3>1. Base64 Encoder + Decoder</h3>
+      <p>Base64 is a group of similar binary-to-text encoding schemes that represent binary data in an ASCII string format by transforming it into a radix-64 representation. <br> The term Base64 originates from a specific MIME content transfer encoding.</p>
+    </div>
+  </div>
   <script src="/src/base64.js" type="module"></script>
-  <h3>2. A1Z26 Encoder + Decoder</h3>
-  <p>A1Z26 is a simple substitution cipher that replaces each letter of the alphabet with its corresponding number. <br> For example, A becomes 1, B becomes 2, and so on until Z becomes 26.</p>
-  <p>You should need this in the very first levels.</p>
+
+  <div class="section-header">
+    <img src="/src/assets/a1z26.jpeg" alt="A1Z26 Icon" class="section-image" />
+    <div class="section-text">
+      <h3>2. A1Z26 Encoder + Decoder</h3>
+      <p>A1Z26 is a simple substitution cipher that replaces each letter of the alphabet with its corresponding number. <br> For example, A becomes 1, B becomes 2, and so on until Z becomes 26.</p>
+      <p>You should need this in the very first levels.</p>
+    </div>
+  </div>
   <script src="/src/a1z26.js" type="module"></script>
-  <h3>3. Morse Code Encoder + Decoder</h3>
-  <p>Morse code is a method used in telecommunication to encode text characters as standardized sequences of two different signal durations, called dots and dashes. <br> Fun fact: Samuel Morse developed the Morse code in the 1830s and 1840s, which is considerably a very long time ago.</p>
+
+  <div class="section-header">
+    <img src="/src/assets/morse.png" alt="Morse Code Icon" class="section-image" />
+    <div class="section-text">
+      <h3>3. Morse Code Encoder + Decoder</h3>
+      <p>Morse code is a method used in telecommunication to encode text characters as standardized sequences of two different signal durations, called dots and dashes. <br> Fun fact: Samuel Morse developed the Morse code in the 1830s and 1840s, which is considerably a very long time ago.</p>
+    </div>
+  </div>
   <script src="/src/morse.js" type="module"></script>
+
+  <div class="section-header">
+    <img src="/src/assets/caesar.jpeg" alt="Caesar Cipher Icon" class="section-image" />
+    <div class="section-text">
+      <h3>4. Caesar Cipher Encoder + Decoder</h3>
+      <p>The Caesar cipher is a type of substitution cipher in which each letter in the plaintext is shifted a certain number of places down or up the alphabet. <br> For example, with a shift of 1, A would be replaced by B, B would become C, and so on. The method is apparently named after Julius Caesar, who used it in his private correspondence.</p>
+    </div>
+  </div>
+  <script src="/src/caesar.js" type="module"></script>
+  <!-- good job you've found this, this is going to be a clue, but idk when im using it, dm me if you found this -->
 </body>
 </html>
