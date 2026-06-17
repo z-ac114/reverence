@@ -47,6 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.body.appendChild(rowContainer);
 
+  const allHeadings = document.querySelectorAll('h3');
+  let morseHeading = null;
+
+  allHeadings.forEach(heading => {
+    if (heading.textContent.includes('Morse')) {
+      morseHeading = heading;
+    }
+  });
+
+  if (morseHeading) {
+    document.body.insertBefore(rowContainer, morseHeading);
+  } else {
+    document.body.appendChild(rowContainer);
+  }
+
   const encodeA1Z26 = (str) => {
     return str
       .toUpperCase()
