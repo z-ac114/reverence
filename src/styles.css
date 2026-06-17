@@ -15,10 +15,13 @@ body {
   margin: 0;
   padding: 20px;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;      
   box-sizing: border-box;
   overflow-y: auto; 
   overflow-x: hidden;
+  
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -175,8 +178,10 @@ a:active {
 }
 
 .bottom-text {
-    margin-top: auto;
-    text-align: center;
-    color: #d2f3ff;
-    padding: 1rem 0;
+  margin-top: auto;        
+  text-align: center;
+  color: #d2f3ff;
+  padding: 1rem 0;
+  font-family: "Aldrich", sans-serif; 
+  width: 100%;
 }
