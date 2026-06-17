@@ -1,0 +1,40 @@
+html, body {
+  width: 100%;
+  height:100%;
+}
+
+body {
+    background: linear-gradient(-45deg, #1b3465, #0d47a1, #00b4db, #149c83, #00b4db, #0d47a1, #1b3465);
+    background-size: 400% 400%;
+    animation: forwardDiagonal 20s linear infinite alternate;
+    font-family: "Aldrich", sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-attachment: fixed; 
+}
+
+h1, h2, h3, p, li {
+    color: #9ff8d7;
+}
+
+h1, h2, h3, p {
+    text-align: center;
+}
+
+h1 {
+    font-size: 70px;
+}
+
+h2 {
+    font-size: 40px;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+li {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
