@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
   outputGroup.classList.add('input-group');
 
   const inputLabel = document.createElement('label');
-  inputLabel.textContent = 'ROT13 (Input)';
+  inputLabel.textContent = 'ASCII Codes (Input)';
   inputLabel.classList.add('box-label');
 
   const cipherInput = document.createElement('textarea');
-  cipherInput.placeholder = 'Enter ROT13 code to reverse...';
+  cipherInput.placeholder = 'Enter space-separated ASCII numbers (e.g., 72 105)...';
   cipherInput.classList.add('base64-input'); 
   cipherInput.rows = 6;
   cipherInput.cols = 30;
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   outputLabel.classList.add('box-label');
 
   const cipherOutput = document.createElement('textarea');
-  cipherOutput.placeholder = 'Decoded output...';
+  cipherOutput.placeholder = 'Decoded text output...';
   cipherOutput.classList.add('base64-output'); 
   cipherOutput.rows = 6;
   cipherOutput.cols = 30;
@@ -46,18 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
   rowContainer.appendChild(toggleBtn);
   rowContainer.appendChild(outputGroup);
 
-  const headers = document.querySelectorAll('.section-header');
-  let nextHeader = null;
 
-  headers.forEach(header => {
-    const heading = header.querySelector('h3');
-    if (heading && heading.textContent.includes('Atbash')) {
-      nextHeader = header;
-    }
-  });
+  const footerElement = document.querySelector('footer');
 
-  if (nextHeader) {
-    document.body.insertBefore(rowContainer, nextHeader);
+  if (footerElement) {
+    footerElement.parentNode.insertBefore(rowContainer, footerElement);
   } else {
     document.body.appendChild(rowContainer);
   }
@@ -105,21 +98,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   scrollObserver.observe(rowContainer);
 
-  const applyROT13 = (str) => {
-    return str
+  const textToAscii = (text) => {
+    return text
       .split('')
-      .map(char => {
-        const code = char.charCodeAt(0);
-        
-        if (code >= 65 && code <= 90) {
-          return String.fromCharCode(((code - 65 + 13) % 26) + 65);
+      .map(char => char.charCodeAt(0))
+      .join(' ');
+  };
+
+  const asciiToText = (asciiStr) => {
+    const tokens = asciiStr.trim().split(/\s+/);
+    
+    return tokens
+      .map(token => {
+        const code = parseInt(token, 10);
+        if (isNaN(code) || code < 0 || code > 65535) {
+          throw new Error('Invalid code');
         }
-        
-        if (code >= 97 && code <= 122) {
-          return String.fromCharCode(((code - 97 + 13) % 26) + 97);
-        }
-        
-        return char;
+        return String.fromCharCode(code);
       })
       .join('');
   };
@@ -127,15 +122,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const performConversion = () => {
     const rawText = cipherInput.value;
 
-    if (rawText.length === 0) {
+    if (rawText.trim().length === 0) {
       cipherOutput.value = '';
       return;
     }
 
     try {
-      cipherOutput.value = applyROT13(rawText);
+      if (isDecodingMode) {
+        cipherOutput.value = textToAscii(rawText);
+      } else {
+        cipherOutput.value = asciiToText(rawText);
+      }
     } catch (error) {
-      cipherOutput.value = 'Error applying ROT13.';
+      cipherOutput.value = 'Malformed numeric data. Please input valid decimal numbers separated by spaces.';
     }
 
     if (typeof gsap !== 'undefined') {
@@ -154,15 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isDecodingMode) {
       toggleBtn.classList.add('decode-active');
       inputLabel.textContent = 'Text (Input)';
-      outputLabel.textContent = 'ROT13 (Output)';
-      cipherInput.placeholder = 'Enter text to transform...';
-      cipherOutput.placeholder = 'ROT13 transformation...';
+      outputLabel.textContent = 'ASCII Codes (Output)';
+      cipherInput.placeholder = 'Enter plain text to extract values...';
+      cipherOutput.placeholder = 'Decimal character codes output...';
     } else {
       toggleBtn.classList.remove('decode-active');
-      inputLabel.textContent = 'ROT13 (Input)';
+      inputLabel.textContent = 'ASCII Codes (Input)';
       outputLabel.textContent = 'Text (Output)';
-      cipherInput.placeholder = 'Enter ROT13 code to reverse...';
-      cipherOutput.placeholder = 'Decoded output...';
+      cipherInput.placeholder = 'Enter space-separated ASCII numbers (e.g., 72 105)...';
+      cipherOutput.placeholder = 'Decoded text output...';
     }
 
     if (typeof gsap !== 'undefined') {
@@ -170,6 +169,13 @@ document.addEventListener('DOMContentLoaded', () => {
         { scale: 0.8 }, 
         { scale: 1, duration: 0.3, ease: "back.out(2)" }
       );
+    }
+
+    const currentInput = cipherInput.value;
+    const currentOutput = cipherOutput.value;
+    
+    if (currentInput.trim().length > 0 && !currentOutput.startsWith('Malformed')) {
+      cipherInput.value = currentOutput;
     }
 
     performConversion();

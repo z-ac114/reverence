@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
   outputGroup.classList.add('input-group');
 
   const inputLabel = document.createElement('label');
-  inputLabel.textContent = 'ROT13 (Input)';
+  inputLabel.textContent = 'Atbash (Input)';
   inputLabel.classList.add('box-label');
 
   const cipherInput = document.createElement('textarea');
-  cipherInput.placeholder = 'Enter ROT13 code to reverse...';
+  cipherInput.placeholder = 'Enter Atbash code to reverse...';
   cipherInput.classList.add('base64-input'); 
   cipherInput.rows = 6;
   cipherInput.cols = 30;
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   headers.forEach(header => {
     const heading = header.querySelector('h3');
-    if (heading && heading.textContent.includes('Atbash')) {
+    if (heading && heading.textContent.includes('Vigenère')) {
       nextHeader = header;
     }
   });
@@ -105,18 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   scrollObserver.observe(rowContainer);
 
-  const applyROT13 = (str) => {
+  const applyAtbash = (str) => {
     return str
       .split('')
       .map(char => {
         const code = char.charCodeAt(0);
         
         if (code >= 65 && code <= 90) {
-          return String.fromCharCode(((code - 65 + 13) % 26) + 65);
+          return String.fromCharCode(90 - (code - 65));
         }
         
         if (code >= 97 && code <= 122) {
-          return String.fromCharCode(((code - 97 + 13) % 26) + 97);
+          return String.fromCharCode(122 - (code - 97));
         }
         
         return char;
@@ -133,9 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      cipherOutput.value = applyROT13(rawText);
+      cipherOutput.value = applyAtbash(rawText);
     } catch (error) {
-      cipherOutput.value = 'Error applying ROT13.';
+      cipherOutput.value = 'Error applying Atbash.';
     }
 
     if (typeof gsap !== 'undefined') {
@@ -154,14 +154,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isDecodingMode) {
       toggleBtn.classList.add('decode-active');
       inputLabel.textContent = 'Text (Input)';
-      outputLabel.textContent = 'ROT13 (Output)';
+      outputLabel.textContent = 'Atbash (Output)';
       cipherInput.placeholder = 'Enter text to transform...';
-      cipherOutput.placeholder = 'ROT13 transformation...';
+      cipherOutput.placeholder = 'Atbash transformation...';
     } else {
       toggleBtn.classList.remove('decode-active');
-      inputLabel.textContent = 'ROT13 (Input)';
+      inputLabel.textContent = 'Atbash (Input)';
       outputLabel.textContent = 'Text (Output)';
-      cipherInput.placeholder = 'Enter ROT13 code to reverse...';
+      cipherInput.placeholder = 'Enter Atbash code to reverse...';
       cipherOutput.placeholder = 'Decoded output...';
     }
 

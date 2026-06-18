@@ -2,24 +2,48 @@ document.addEventListener('DOMContentLoaded', () => {
   let isDecodingMode = false;
 
   const rowContainer = document.createElement('div');
-  rowContainer.classList.add('converter-row');
+  rowContainer.classList.add('converter-row2');
   rowContainer.style.opacity = '0';
 
   const inputGroup = document.createElement('div');
   inputGroup.classList.add('input-group');
 
+  const controlGroup = document.createElement('div');
+  controlGroup.classList.add('control-group');
+  controlGroup.style.display = 'flex';
+  controlGroup.style.flexDirection = 'column';
+  controlGroup.style.alignItems = 'center';
+  controlGroup.style.gap = '10px';
+
   const outputGroup = document.createElement('div');
   outputGroup.classList.add('input-group');
 
   const inputLabel = document.createElement('label');
-  inputLabel.textContent = 'ROT13 (Input)';
+  inputLabel.textContent = 'Vigenère (Input)';
   inputLabel.classList.add('box-label');
 
   const cipherInput = document.createElement('textarea');
-  cipherInput.placeholder = 'Enter ROT13 code to reverse...';
+  cipherInput.placeholder = 'Enter Vigenère code to decrypt...';
   cipherInput.classList.add('base64-input'); 
   cipherInput.rows = 6;
-  cipherInput.cols = 30;
+  cipherInput.cols = 25;
+
+  const keyLabel = document.createElement('label');
+  keyLabel.textContent = 'Secret Key';
+  keyLabel.classList.add('box-label');
+  keyLabel.style.fontSize = '0.85rem';
+
+  const keyInput = document.createElement('input');
+  keyInput.type = 'text';
+  keyInput.placeholder = 'e.g. key';
+  keyInput.classList.add('vigenere-key-input');
+  keyInput.style.width = '80px';
+  keyInput.style.height = '40px';
+  keyInput.style.padding = '8px';
+  keyInput.style.borderRadius = '4px';
+  keyInput.style.border = '1px solid #0d48a164';
+  keyInput.style.textAlign = 'center';
+  keyInput.style.textTransform = 'lowercase';
 
   const outputLabel = document.createElement('label');
   outputLabel.textContent = 'Text (Output)';
@@ -29,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   cipherOutput.placeholder = 'Decoded output...';
   cipherOutput.classList.add('base64-output'); 
   cipherOutput.rows = 6;
-  cipherOutput.cols = 30;
+  cipherOutput.cols = 25;
   cipherOutput.readOnly = true;
 
   const toggleBtn = document.createElement('button');
@@ -39,11 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
   inputGroup.appendChild(inputLabel);
   inputGroup.appendChild(cipherInput);
 
+  controlGroup.appendChild(toggleBtn);
+  controlGroup.appendChild(keyLabel);
+  controlGroup.appendChild(keyInput);
+
   outputGroup.appendChild(outputLabel);
   outputGroup.appendChild(cipherOutput);
 
   rowContainer.appendChild(inputGroup);
-  rowContainer.appendChild(toggleBtn);
+  rowContainer.appendChild(controlGroup);
   rowContainer.appendChild(outputGroup);
 
   const headers = document.querySelectorAll('.section-header');
@@ -51,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   headers.forEach(header => {
     const heading = header.querySelector('h3');
-    if (heading && heading.textContent.includes('Atbash')) {
+    if (heading && heading.textContent.includes('ASCII')) {
       nextHeader = header;
     }
   });
@@ -105,18 +133,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   scrollObserver.observe(rowContainer);
 
-  const applyROT13 = (str) => {
+  const applyVigenere = (str, key, decode = false) => {
+    if (!key) return str;
+    let keyIndex = 0;
+    const cleanKey = key.toUpperCase().replace(/[^A-Z]/g, '');
+    if (cleanKey.length === 0) return str;
+
     return str
       .split('')
       .map(char => {
         const code = char.charCodeAt(0);
-        
-        if (code >= 65 && code <= 90) {
-          return String.fromCharCode(((code - 65 + 13) % 26) + 65);
-        }
-        
-        if (code >= 97 && code <= 122) {
-          return String.fromCharCode(((code - 97 + 13) % 26) + 97);
+        let isUpper = code >= 65 && code <= 90;
+        let isLower = code >= 97 && code <= 122;
+
+        if (isUpper || isLower) {
+          const base = isUpper ? 65 : 97;
+          const shift = cleanKey.charCodeAt(keyIndex % cleanKey.length) - 65;
+          
+          const directionShift = decode ? (26 - shift) : shift;
+          
+          keyIndex++; 
+          
+          return String.fromCharCode(((code - base + directionShift) % 26) + base);
         }
         
         return char;
@@ -126,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const performConversion = () => {
     const rawText = cipherInput.value;
+    const secretKey = keyInput.value;
 
     if (rawText.length === 0) {
       cipherOutput.value = '';
@@ -133,9 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      cipherOutput.value = applyROT13(rawText);
+      cipherOutput.value = applyVigenere(rawText, secretKey, isDecodingMode);
     } catch (error) {
-      cipherOutput.value = 'Error applying ROT13.';
+      cipherOutput.value = 'Error applying Vigenère cipher.';
     }
 
     if (typeof gsap !== 'undefined') {
@@ -147,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   cipherInput.addEventListener('input', performConversion);
+  keyInput.addEventListener('input', performConversion);
 
   toggleBtn.addEventListener('click', () => {
     isDecodingMode = !isDecodingMode;
@@ -154,14 +194,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isDecodingMode) {
       toggleBtn.classList.add('decode-active');
       inputLabel.textContent = 'Text (Input)';
-      outputLabel.textContent = 'ROT13 (Output)';
-      cipherInput.placeholder = 'Enter text to transform...';
-      cipherOutput.placeholder = 'ROT13 transformation...';
+      outputLabel.textContent = 'Vigenère (Output)';
+      cipherInput.placeholder = 'Enter plain text to encrypt...';
+      cipherOutput.placeholder = 'Vigenère encryption output...';
     } else {
       toggleBtn.classList.remove('decode-active');
-      inputLabel.textContent = 'ROT13 (Input)';
+      inputLabel.textContent = 'Vigenère (Input)';
       outputLabel.textContent = 'Text (Output)';
-      cipherInput.placeholder = 'Enter ROT13 code to reverse...';
+      cipherInput.placeholder = 'Enter Vigenère code to decrypt...';
       cipherOutput.placeholder = 'Decoded output...';
     }
 
