@@ -1,6 +1,6 @@
 # Description
 
-A utility webpage for Esoterica.
+A utility webpage for Esoterica, which is a HTML ARG puzzle webpage.
 
 # AI usage
 
