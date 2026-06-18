@@ -47,10 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
   rowContainer.appendChild(outputGroup);
 
 
-  const footerElement = document.querySelector('footer');
+  const headers = document.querySelectorAll('.section-header');
+  let nextHeader = null;
 
-  if (footerElement) {
-    footerElement.parentNode.insertBefore(rowContainer, footerElement);
+  headers.forEach(header => {
+    const heading = header.querySelector('h3');
+    if (heading && heading.textContent.includes('Hexadecimal')) {
+      nextHeader = header;
+    }
+  });
+
+  if (nextHeader) {
+    document.body.insertBefore(rowContainer, nextHeader);
   } else {
     document.body.appendChild(rowContainer);
   }

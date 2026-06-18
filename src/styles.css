@@ -215,3 +215,14 @@ a:active {
   outline: none;
   resize: vertical;
 }
+
+.format-selector {
+  font-family: "Aldrich", sans-serif;
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 2px solid #0d48a164;
+  border-radius: 4px;
+  background-color: #afebf1;
+  color: #3768ca;
+  outline:#9fc1f8;
+}
